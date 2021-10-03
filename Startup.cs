@@ -27,14 +27,17 @@ namespace IdentityApp
         {
             services.AddControllersWithViews();
             services.AddRazorPages();
-            services.AddDbContext<ProductDbContext>(opts => {
+            services.AddDbContext<ProductDbContext>(opts =>
+            {
                 opts.UseSqlServer(
                 Configuration["ConnectionStrings:AppDataConnection"]);
             });
-            services.AddHttpsRedirection(opts => {
+            services.AddHttpsRedirection(opts =>
+            {
                 opts.HttpsPort = 44350;
             });
-            services.AddDbContext<IdentityDbContext>(opts => {
+            services.AddDbContext<IdentityDbContext>(opts =>
+            {
                 opts.UseSqlServer(
                 Configuration["ConnectionStrings:IdentityConnection"],
                 opts => opts.MigrationsAssembly("IdentityApp")
@@ -43,8 +46,25 @@ namespace IdentityApp
 
             services.AddScoped<IEmailSender, ConsoleEmailSender>();
 
-            services.AddDefaultIdentity<IdentityUser>()
+            services.AddDefaultIdentity<IdentityUser>(it =>
+            {
+                it.SignIn.RequireConfirmedAccount = true;
+                it.SignIn.RequireConfirmedEmail = true;
+                it.Lockout.AllowedForNewUsers = true;
+                it.Lockout.MaxFailedAccessAttempts = 3;
+            })
             .AddEntityFrameworkStores<IdentityDbContext>();
+
+            services.AddAuthentication()
+            .AddFacebook(it =>
+            {
+                it.AppId = Configuration["Facebook:AppId"];
+                it.AppSecret = Configuration["Facebook:AppSecret"];
+            })
+            .AddGoogle(opts => {
+                opts.ClientId = Configuration["Google:ClientId"];
+                opts.ClientSecret = Configuration["Google:ClientSecret"];
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
