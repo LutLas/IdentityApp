@@ -46,7 +46,7 @@ namespace IdentityApp
 
             services.AddScoped<IEmailSender, ConsoleEmailSender>();
 
-            services.AddDefaultIdentity<IdentityUser>(it =>
+            services.AddIdentity<IdentityUser, IdentityRole>(it =>
             {
                 it.SignIn.RequireConfirmedAccount = true;
                 it.SignIn.RequireConfirmedEmail = true;
