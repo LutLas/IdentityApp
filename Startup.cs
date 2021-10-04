@@ -52,6 +52,7 @@ namespace IdentityApp
                 it.SignIn.RequireConfirmedEmail = true;
                 it.Lockout.AllowedForNewUsers = true;
                 it.Lockout.MaxFailedAccessAttempts = 3;
+                it.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
             })
             .AddEntityFrameworkStores<IdentityDbContext>();
 
@@ -61,10 +62,11 @@ namespace IdentityApp
                 it.AppId = Configuration["Facebook:AppId"];
                 it.AppSecret = Configuration["Facebook:AppSecret"];
             })
-            .AddGoogle(opts => {
-                opts.ClientId = Configuration["Google:ClientId"];
-                opts.ClientSecret = Configuration["Google:ClientSecret"];
-            });
+            .AddGoogle(it =>
+             {
+                 it.ClientId = Configuration["Google:ClientId"];
+                 it.ClientSecret = Configuration["Google:ClientSecret"];
+             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
