@@ -54,7 +54,10 @@ namespace IdentityApp
                 it.Lockout.MaxFailedAccessAttempts = 3;
                 it.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
             })
-            .AddEntityFrameworkStores<IdentityDbContext>();
+            .AddEntityFrameworkStores<IdentityDbContext>().AddDefaultTokenProviders();
+            
+            services.AddScoped<TokenUrlEncoderService>();
+            services.AddScoped<IdentityEmailService>();
 
             services.AddAuthentication()
             .AddFacebook(it =>
@@ -67,6 +70,12 @@ namespace IdentityApp
                  it.ClientId = Configuration["Google:ClientId"];
                  it.ClientSecret = Configuration["Google:ClientSecret"];
              });
+
+            services.ConfigureApplicationCookie(opts => {
+                opts.LoginPath = "/Identity/SignIn";
+                opts.LogoutPath = "/Identity/SignOut";
+                opts.AccessDeniedPath = "/Identity/Forbidden";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

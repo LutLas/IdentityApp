@@ -38,7 +38,11 @@ namespace IdentityApp.Pages.Identity.Admin
                     EmailConfirmed = true
                 };
                 IdentityResult result = await UserManager.CreateAsync(userObject);
-                result.Process(ModelState);
+                if (result.Process(ModelState))
+                {
+                    result = await UserManager.AddPasswordAsync(userObject, "Test123.");
+                    result.Process(ModelState);
+                }
             }
             if (ModelState.IsValid)
             {
