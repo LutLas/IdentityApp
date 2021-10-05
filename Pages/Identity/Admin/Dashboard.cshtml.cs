@@ -24,6 +24,11 @@ namespace IdentityApp.Pages.Identity.Admin
         public void OnGet()
         {
             UsersCount = UserManager.Users.Count();
+            UsersUnconfirmed = UserManager.Users
+            .Where(u => !u.EmailConfirmed).Count();
+            UsersLockedout = UserManager.Users
+            .Where(u => u.LockoutEnabled && u.LockoutEnd > System.DateTimeOffset.Now)
+            .Count();
         }
         public async Task<IActionResult> OnPostAsync() {
             foreach (IdentityUser existingUser in UserManager.Users.ToList())

@@ -55,7 +55,11 @@ namespace IdentityApp
                 it.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
             })
             .AddEntityFrameworkStores<IdentityDbContext>().AddDefaultTokenProviders();
-            
+
+            services.Configure<SecurityStampValidatorOptions>(it => {
+                it.ValidationInterval = System.TimeSpan.FromMinutes(1);
+            });
+
             services.AddScoped<TokenUrlEncoderService>();
             services.AddScoped<IdentityEmailService>();
 
